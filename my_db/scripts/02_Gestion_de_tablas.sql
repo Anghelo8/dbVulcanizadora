@@ -8,17 +8,18 @@
 
 -- Tabla Cliente
 CREATE TABLE Cliente (
-    id_cliente INT PRIMARY KEY AUTO_INCREMENT,
+    idCliente INT PRIMARY KEY AUTO_INCREMENT,
     nombre VARCHAR(100) NOT NULL,
     apellido VARCHAR(100) NOT NULL,
+    numeroTelefono VARCHAR(20),
+    correo VARCHAR(100),
     direccion VARCHAR(255),
-    celular CHAR(9) NOT NULL,
-    correo_electronico VARCHAR(255),
-    tipo_de_documento CHAR(3),
-    numero_de_documento VARCHAR(20),
-    atributo_9 INT,
-    fecha DATE,
-    estado BOOLEAN
+    fechaNacimiento DATE,
+    sexo VARCHAR(20),
+    tipoDocumento VARCHAR(50),
+    numeroDocumento VARCHAR(50) UNIQUE NOT NULL,
+    estado BOOLEAN NOT NULL DEFAULT TRUE, -- TRUE para activo, FALSE para inactivo (eliminación lógica)
+    fechaRegistro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Tabla Producto
@@ -29,8 +30,8 @@ CREATE TABLE Producto (
     marca VARCHAR(50),
     precio DECIMAL(10, 2),
     stock INT,
-    hay_en_stock BOOLEAN,
-    fecha_de_regi TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    -- hay_en_stock BOOLEAN, -- Campo eliminado por ser redundante
+    fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP -- Nombre corregido
 );
 
 -- Tabla Servicio
@@ -38,7 +39,7 @@ CREATE TABLE Servicio (
     id_servicio INT PRIMARY KEY AUTO_INCREMENT,
     tipo_servicio VARCHAR(50),
     descripcion TEXT,
-    estado_vehiculo BOOLEAN,
+    estado_vehiculo BOOLEAN, -- Considera un nombre más específico como 'servicio_completado'
     fecha DATE,
     price DECIMAL(10, 2)
 );
@@ -46,20 +47,20 @@ CREATE TABLE Servicio (
 -- Tabla Vehiculo
 CREATE TABLE Vehiculo (
     id_vehiculo INT PRIMARY KEY AUTO_INCREMENT,
-    id_cliente INT NOT NULL,
+    id_cliente INT NOT NULL, -- Columna que referencia a Cliente
     marca VARCHAR(50),
     tipo VARCHAR(50),
     placa VARCHAR(20),
-    FOREIGN KEY (id_cliente) REFERENCES Cliente(id_cliente)
+    FOREIGN KEY (id_cliente) REFERENCES Cliente(idCliente) -- ¡CORREGIDO aquí!
 );
 
 -- Tabla Venta
 CREATE TABLE Venta (
     id_venta INT PRIMARY KEY AUTO_INCREMENT,
-    id_cliente INT NOT NULL,
+    id_cliente INT NOT NULL, -- Columna que referencia a Cliente
     fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     total DECIMAL(10, 2),
-    FOREIGN KEY (id_cliente) REFERENCES Cliente(id_cliente)
+    FOREIGN KEY (id_cliente) REFERENCES Cliente(idCliente) -- ¡CORREGIDO aquí!
 );
 
 -- Tabla Orden_de_Servicio
@@ -70,7 +71,7 @@ CREATE TABLE Orden_de_Servicio (
     id_servicio INT,
     fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     estado CHAR(1),
-    FOREIGN KEY (id_cliente) REFERENCES Cliente(id_cliente),
+    FOREIGN KEY (id_cliente) REFERENCES Cliente(idCliente), -- ¡CORREGIDO aquí!
     FOREIGN KEY (id_producto) REFERENCES Producto(id_producto),
     FOREIGN KEY (id_servicio) REFERENCES Servicio(id_servicio)
 );
@@ -85,7 +86,6 @@ CREATE TABLE Detalle_de_venta (
     FOREIGN KEY (id_venta) REFERENCES Venta(id_venta),
     FOREIGN KEY (id_producto) REFERENCES Producto(id_producto)
 );
-
 
 -- Verificación de tablas creadas
 SHOW TABLES;
