@@ -12,82 +12,61 @@ Este documento describe la creación de relaciones entre las tablas de la base d
 
 ## 🔗 Relaciones Establecidas
 
-### 1. Relación: `Customer (1) --- (∞) Vehicle`
+-- Base de Datos: Vulcanizadora
+USE dbVulcanizadora;
 
-- **Descripción**: Un cliente puede tener varios vehículos.
-- **Acción**:
-```sql
-ALTER TABLE Vehicle
-ADD CONSTRAINT fk_customer_vehicle
-FOREIGN KEY (id_customer) REFERENCES Customer(id_customer);
+-- Relación: Cliente (1) --- (∞) Vehiculo
+-- Descripción: Un cliente puede tener varios vehículos.
+ALTER TABLE Vehiculo
+ADD CONSTRAINT fk_cliente_vehiculo
+FOREIGN KEY (id_cliente) REFERENCES Cliente(id_cliente);
 
-2. Relación: Customer (1) --- (∞) Order_of_service
-Descripción: Un cliente puede tener muchas órdenes de servicio.
+-- Relación: Cliente (1) --- (∞) Orden_de_Servicio
+-- Descripción: Un cliente puede tener muchas órdenes de servicio.
+ALTER TABLE Orden_de_Servicio
+ADD CONSTRAINT fk_cliente_orden
+FOREIGN KEY (id_cliente) REFERENCES Cliente(id_cliente);
 
-Acción:
+-- Relación: Producto (1) --- (∞) Orden_de_Servicio
+-- Descripción: Un producto puede estar relacionado con muchas órdenes de servicio.
+ALTER TABLE Orden_de_Servicio
+ADD CONSTRAINT fk_producto_orden
+FOREIGN KEY (id_producto) REFERENCES Producto(id_producto);
 
-sql
-ALTER TABLE Order_of_service
-ADD CONSTRAINT fk_customer_order
-FOREIGN KEY (id_customer) REFERENCES Customer(id_customer);
-3. Relación: Product (1) --- (∞) Order_of_service
-Descripción: Un producto puede estar relacionado con muchas órdenes de servicio.
+-- Relación: Servicio (1) --- (∞) Orden_de_Servicio
+-- Descripción: Un servicio puede estar incluido en muchas órdenes de servicio.
+ALTER TABLE Orden_de_Servicio
+ADD CONSTRAINT fk_servicio_orden
+FOREIGN KEY (id_servicio) REFERENCES Servicio(id_servicio);
 
-Acción:
+-- Relación: Cliente (1) --- (∞) Venta
+-- Descripción: Un cliente puede realizar varias ventas.
+ALTER TABLE Venta
+ADD CONSTRAINT fk_cliente_venta
+FOREIGN KEY (id_cliente) REFERENCES Cliente(id_cliente);
 
-sql
-ALTER TABLE Order_of_service
-ADD CONSTRAINT fk_product_order
-FOREIGN KEY (id_product) REFERENCES Product(id_product);
+-- Relación: Venta (1) --- (∞) Detalle_de_venta
+-- Descripción: Una venta puede tener varios detalles de venta.
+ALTER TABLE Detalle_de_venta
+ADD CONSTRAINT fk_venta_detalle
+FOREIGN KEY (id_venta) REFERENCES Venta(id_venta);
 
-4. Relación: Services (1) --- (∞) Order_of_service
-Descripción: Un servicio puede estar incluido en muchas órdenes de servicio.
+-- Relación: Producto (1) --- (∞) Detalle_de_venta
+-- Descripción: Un producto puede aparecer en múltiples detalles de venta.
+ALTER TABLE Detalle_de_venta
+ADD CONSTRAINT fk_producto_detalle
+FOREIGN KEY (id_producto) REFERENCES Producto(id_producto);
 
-Acción:
-
-sql
-ALTER TABLE Order_of_service
-ADD CONSTRAINT fk_service_order
-FOREIGN KEY (Services_service_id) REFERENCES Services(service_id);
-
-5. Relación: Customer (1) --- (∞) Sale
-Descripción: Un cliente puede realizar varias ventas.
-
-Acción:
-
-sql
-ALTER TABLE Sale
-ADD CONSTRAINT fk_customer_sale
-FOREIGN KEY (id_customer) REFERENCES Customer(id_customer);
-6. Relación: Sale (1) --- (∞) Sale_detail
-Descripción: Una venta puede tener varios detalles de venta.
-
-Acción:
-
-sql
-ALTER TABLE Sale_detail
-ADD CONSTRAINT fk_sale_detail
-FOREIGN KEY (id_sale) REFERENCES Sale(id_sale);
-
-7. Relación: Product (1) --- (∞) Sale_detail
-Descripción: Un producto puede aparecer en múltiples detalles de venta.
-
-Acción:
-
-sql
-ALTER TABLE Sale_detail
-ADD CONSTRAINT fk_product_detail
-FOREIGN KEY (id_product) REFERENCES Product(id_product);
-🔍 Verificación de Relaciones
-sql
-SELECT 
+-- Verificación de Relaciones
+SELECT
     kcu.CONSTRAINT_NAME AS 'Nombre de Relación',
     kcu.REFERENCED_TABLE_NAME AS 'Tabla Padre',
     kcu.REFERENCED_COLUMN_NAME AS 'Primary Key',
     kcu.TABLE_NAME AS 'Tabla Hija',
     kcu.COLUMN_NAME AS 'Foreign Key'
-FROM 
+FROM
     information_schema.KEY_COLUMN_USAGE AS kcu
-WHERE 
-    kcu.TABLE_SCHEMA = 'dbVulcanizadora' 
+WHERE
+    kcu.TABLE_SCHEMA = 'dbVulcanizadora'
     AND kcu.REFERENCED_TABLE_NAME IS NOT NULL;
+
