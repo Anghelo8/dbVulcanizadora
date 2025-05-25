@@ -14,7 +14,7 @@ INSERT INTO Vehiculo (id_vehiculo, id_cliente, marca, tipo, placa)
 VALUES (1, 1, 'Toyota', 'Sedán', 'ABC-123');
 
 -- Tabla Producto
-INSERT INTO Producto (id_producto, nombre, tipo, precio, en_stock, stock, fecha_de_regi)
+INSERT INTO Producto (id_producto, nombre, tipo, precio, hay_en_stock, stock, fecha_de_regi)
 VALUES (1, 'Aceite 20W50', 'Lubricante', 50.00, true, 20, NOW());
 
 -- Tabla Servicio
