@@ -11,81 +11,84 @@ CHARACTER SET utf8mb4
 COLLATE utf8mb4_spanish_ci;
 USE dbVulcanizadora;
 
--- Tabla Customer
-CREATE TABLE Customer (
-    id_customer INT PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(100) NOT NULL,
-    lastname VARCHAR(100) NOT NULL,
-    address VARCHAR(255),
-    phone CHAR(9) NOT NULL,
-    email VARCHAR(255),
-    document_type CHAR(3),
-    document_number VARCHAR(20),
-    date DATE,
-    estate BOOLEAN
+-- Tabla Cliente
+CREATE TABLE Cliente (
+    id_cliente INT PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR(100) NOT NULL,
+    apellido VARCHAR(100) NOT NULL,
+    direccion VARCHAR(255),
+    celular CHAR(9) NOT NULL,
+    correo_electronico VARCHAR(255),
+    tipo_de_documento CHAR(3),
+    numero_de_documento VARCHAR(20),
+    atributo_9 INT,
+    fecha DATE,
+    estado BOOLEAN
 );
 
--- Tabla Vehicle
-CREATE TABLE Vehicle (
-    id_vehicle INT PRIMARY KEY AUTO_INCREMENT,
-    id_customer INT NOT NULL,
-    brand VARCHAR(50),
-    type VARCHAR(50),
-    plate VARCHAR(20),
-    FOREIGN KEY (id_customer) REFERENCES Customer(id_customer)
+-- Tabla Vehiculo
+CREATE TABLE Vehiculo (
+    id_vehiculo INT PRIMARY KEY AUTO_INCREMENT,
+    id_cliente INT NOT NULL,
+    marca VARCHAR(50),
+    tipo VARCHAR(50),
+    placa VARCHAR(20),
+    FOREIGN KEY (id_cliente) REFERENCES Cliente(id_cliente)
 );
 
--- Tabla Services
-CREATE TABLE Services (
-    service_id INT PRIMARY KEY AUTO_INCREMENT,
-    service_type VARCHAR(50),
-    description TEXT,
-    service_status BLOB,
-    date DATE
+-- Tabla Servicio
+CREATE TABLE Servicio (
+    id_servicio INT PRIMARY KEY AUTO_INCREMENT,
+    tipo_servicio VARCHAR(50),
+    descripcion TEXT,
+    estado_vehiculo BOOLEAN,
+    fecha DATE,
+    price DECIMAL(10, 2)
 );
 
--- Tabla Product
-CREATE TABLE Product (
-    id_product INT PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(60),
-    type VARCHAR(50),
-    price DECIMAL(10,2),
-    `in stock` BOOLEAN,
+-- Tabla Orden_de_Servicio
+CREATE TABLE Orden_de_Servicio (
+    id_orden INT PRIMARY KEY AUTO_INCREMENT,
+    id_cliente INT NOT NULL,
+    id_producto INT,
+    id_servicio INT,
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    estado CHAR(1),
+    FOREIGN KEY (id_cliente) REFERENCES Cliente(id_cliente),
+    FOREIGN KEY (id_producto) REFERENCES Producto(id_producto),
+    FOREIGN KEY (id_servicio) REFERENCES Servicio(id_servicio)
+);
+
+-- Tabla Producto
+CREATE TABLE Producto (
+    id_producto INT PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR(60),
+    tipo VARCHAR(50),
+    marca VARCHAR(50),
+    precio DECIMAL(10, 2),
     stock INT,
-    registration_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    hay_en_stock BOOLEAN,
+    fecha_de_regi TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Tabla Order_of_service
-CREATE TABLE Order_of_service (
-    id_order INT PRIMARY KEY AUTO_INCREMENT,
-    id_customer INT NOT NULL,
-    id_product INT,
-    Services_service_id INT,
-    date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    status CHAR(1),
-    FOREIGN KEY (id_customer) REFERENCES Customer(id_customer),
-    FOREIGN KEY (id_product) REFERENCES Product(id_product),
-    FOREIGN KEY (Services_service_id) REFERENCES Services(service_id)
+-- Tabla Venta
+CREATE TABLE Venta (
+    id_venta INT PRIMARY KEY AUTO_INCREMENT,
+    id_cliente INT NOT NULL,
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    total DECIMAL(10, 2),
+    FOREIGN KEY (id_cliente) REFERENCES Cliente(id_cliente)
 );
 
--- Tabla Sale
-CREATE TABLE Sale (
-    id_sale INT PRIMARY KEY AUTO_INCREMENT,
-    id_customer INT NOT NULL,
-    sale_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    total DECIMAL(10,2),
-    FOREIGN KEY (id_customer) REFERENCES Customer(id_customer)
-);
-
--- Tabla Sale_detail
-CREATE TABLE Sale_detail (
-    id_sale_detail INT PRIMARY KEY AUTO_INCREMENT,
-    id_sale INT NOT NULL,
-    id_product INT NOT NULL,
-    quantity INT,
-    unit_price DECIMAL(10,2),
-    FOREIGN KEY (id_sale) REFERENCES Sale(id_sale),
-    FOREIGN KEY (id_product) REFERENCES Product(id_product)
+-- Tabla Detalle_de_venta
+CREATE TABLE Detalle_de_venta (
+    id_detalle_venta INT PRIMARY KEY AUTO_INCREMENT,
+    id_venta INT NOT NULL,
+    id_producto INT NOT NULL,
+    cantidad INT,
+    precio_unitario DECIMAL(10, 2),
+    FOREIGN KEY (id_venta) REFERENCES Venta(id_venta),
+    FOREIGN KEY (id_producto) REFERENCES Producto(id_producto)
 );
 
 -- Verificación de tablas creadas
