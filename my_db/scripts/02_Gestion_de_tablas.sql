@@ -5,11 +5,6 @@
 -- Autor    : Anghelo Goicochea -Luciana Ruiz - Jose Condor
 -- -----------------------------------------------------------------
 
--- Base de Datos: Vulcanizadora
-CREATE DATABASE IF NOT EXISTS dbVulcanizadora
-CHARACTER SET utf8mb4
-COLLATE utf8mb4_spanish_ci;
-USE dbVulcanizadora;
 
 -- Tabla Cliente
 CREATE TABLE Cliente (
@@ -26,14 +21,16 @@ CREATE TABLE Cliente (
     estado BOOLEAN
 );
 
--- Tabla Vehiculo
-CREATE TABLE Vehiculo (
-    id_vehiculo INT PRIMARY KEY AUTO_INCREMENT,
-    id_cliente INT NOT NULL,
-    marca VARCHAR(50),
+-- Tabla Producto
+CREATE TABLE Producto (
+    id_producto INT PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR(60),
     tipo VARCHAR(50),
-    placa VARCHAR(20),
-    FOREIGN KEY (id_cliente) REFERENCES Cliente(id_cliente)
+    marca VARCHAR(50),
+    precio DECIMAL(10, 2),
+    stock INT,
+    hay_en_stock BOOLEAN,
+    fecha_de_regi TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Tabla Servicio
@@ -44,6 +41,25 @@ CREATE TABLE Servicio (
     estado_vehiculo BOOLEAN,
     fecha DATE,
     price DECIMAL(10, 2)
+);
+
+-- Tabla Vehiculo
+CREATE TABLE Vehiculo (
+    id_vehiculo INT PRIMARY KEY AUTO_INCREMENT,
+    id_cliente INT NOT NULL,
+    marca VARCHAR(50),
+    tipo VARCHAR(50),
+    placa VARCHAR(20),
+    FOREIGN KEY (id_cliente) REFERENCES Cliente(id_cliente)
+);
+
+-- Tabla Venta
+CREATE TABLE Venta (
+    id_venta INT PRIMARY KEY AUTO_INCREMENT,
+    id_cliente INT NOT NULL,
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    total DECIMAL(10, 2),
+    FOREIGN KEY (id_cliente) REFERENCES Cliente(id_cliente)
 );
 
 -- Tabla Orden_de_Servicio
@@ -59,27 +75,6 @@ CREATE TABLE Orden_de_Servicio (
     FOREIGN KEY (id_servicio) REFERENCES Servicio(id_servicio)
 );
 
--- Tabla Producto
-CREATE TABLE Producto (
-    id_producto INT PRIMARY KEY AUTO_INCREMENT,
-    nombre VARCHAR(60),
-    tipo VARCHAR(50),
-    marca VARCHAR(50),
-    precio DECIMAL(10, 2),
-    stock INT,
-    hay_en_stock BOOLEAN,
-    fecha_de_regi TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- Tabla Venta
-CREATE TABLE Venta (
-    id_venta INT PRIMARY KEY AUTO_INCREMENT,
-    id_cliente INT NOT NULL,
-    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    total DECIMAL(10, 2),
-    FOREIGN KEY (id_cliente) REFERENCES Cliente(id_cliente)
-);
-
 -- Tabla Detalle_de_venta
 CREATE TABLE Detalle_de_venta (
     id_detalle_venta INT PRIMARY KEY AUTO_INCREMENT,
@@ -90,6 +85,7 @@ CREATE TABLE Detalle_de_venta (
     FOREIGN KEY (id_venta) REFERENCES Venta(id_venta),
     FOREIGN KEY (id_producto) REFERENCES Producto(id_producto)
 );
+
 
 -- Verificación de tablas creadas
 SHOW TABLES;
